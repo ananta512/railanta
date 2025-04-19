@@ -3,14 +3,16 @@ const WebSocket = require('ws');
 const app = express();
 const port = 3000;
 
-// WebSocket server setup
 const wss = new WebSocket.Server({ noServer: true });
 
 wss.on('connection', (ws, req) => {
     console.log('New WebSocket connection established');
     
+    // Handling received messages
     ws.on('message', (message) => {
         console.log('Received:', message);
+        // Respond to the client
+        ws.send('Message received: ' + message);
     });
 
     ws.on('close', () => {
@@ -18,12 +20,7 @@ wss.on('connection', (ws, req) => {
     });
 });
 
-// Handling requests and passing Base64 string as path
-app.get('/', (req, res) => {
-    res.send('WebSocket Proxy Server is running');
-});
-
-// Upgrade the HTTP connection to WebSocket
+// Handling the HTTP upgrade to WebSocket
 app.server = app.listen(port, () => {
     console.log(`Listening on http://localhost:${port}`);
 });
